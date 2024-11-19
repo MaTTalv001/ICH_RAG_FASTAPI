@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  admin:
+    build: 
+      context: ./admin
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/data
+      - vectorstore:/vectorstore  # 名前付きボリュームを使用
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    command: streamlit run /app/main.py
+
+  api:
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+      - vectorstore:/vectorstore  # 同じボリュームを共有
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+volumes:
+  vectorstore:  # 名前付きボリュームの定義

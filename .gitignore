@@ -1,0 +1,16 @@
+# 環境変数ファイル
+.env
+
+# ベクトルストアのデータ
+vectorstore/*
+!vectorstore/.gitkeep
+
+# ICHガイドラインのデータ
+data/ich_guidelines/*
+!data/ich_guidelines/.gitkeep
+!data/dataset/.gitkeep
+
+# その他の一般的な除外
+__pycache__/
+*.pyc
+.DS_Store
