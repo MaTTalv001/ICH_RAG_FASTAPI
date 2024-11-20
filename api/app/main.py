@@ -2,8 +2,19 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from qa import ICHGuidelineQA  # 同じディレクトリのqa.pyから直接import
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="ICH Guidelines RAG API")
+
+# CORS対応
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Reactアプリのオリジン
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # リクエストモデル
 class QuestionRequest(BaseModel):
@@ -23,6 +34,11 @@ class RAGResponse(BaseModel):
     
 # QAシステムのグローバルインスタンス
 qa_system = ICHGuidelineQA(persist_directory="/vectorstore/ich_db")
+
+# CORS対応
+@app.options("/rag")
+async def options_rag():
+   return {}
 
 @app.post("/rag", response_model=RAGResponse)
 async def get_rag_response(request: QuestionRequest):
